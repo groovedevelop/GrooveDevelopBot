@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 public class Bot extends TelegramLongPollingBot {
     private long chat_id;
@@ -76,5 +77,19 @@ public class Bot extends TelegramLongPollingBot {
 
     public String getBotUsername() { return "@GrooveDevelopBot"; }
 
-    public String getBotToken() { return "1031625636:AAHUcoj6Y6kdCMtKhOD7-lpBwj-whKE9Mbw"; }
+    public String getBotToken() {
+        Properties prop = new Properties();
+        try {
+            //load a properties file from class path, inside static method
+            prop.load(Bot.class.getResourceAsStream("main/resources/config.properties"));
+
+            //get the property value and print it out
+            System.out.println(prop.getProperty("token"));
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return prop.getProperty("token");
+    }
+
 }
