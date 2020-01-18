@@ -45,7 +45,12 @@ public class Bot extends TelegramLongPollingBot {
         if (msg.contains("Информация о книге")) {
             return getBookInfo();
         }
-        return msg;
+
+        if (msg.contains("/person")) {
+            msg = msg.replace("/person ", "");
+            return getPersonInfo(msg);
+        }
+        return "Не понял";
     }
 
     public String getBookInfo() {
@@ -75,6 +80,28 @@ public class Bot extends TelegramLongPollingBot {
 
     }
 
+    public String getPersonInfo(String msg) {
+        Author author = new Author(msg);
+
+        SendPhoto sendPhotoRequest = new SendPhoto();
+
+        try (InputStream in = new URL(author.getImg()).openStream()) {
+            Files.copy(in, Paths.get("D:\\srgBook"));
+            sendPhotoRequest.setChatId(chat_id);
+            sendPhotoRequest.setPhoto(new File("D:\\srgBook"));
+            execute(sendPhotoRequest);
+            Files.delete(Paths.get("D:\\srgBook"));
+        }
+        catch (IOException ex) {
+            System.out.println("File not found");
+        }
+        catch (TelegramApiException e){
+            e.printStackTrace();
+        }
+
+        return author.getPersonInfo();
+    }
+
     public String getBotUsername() { return "@GrooveDevelopBot"; }
 
     public String getBotToken() {
@@ -91,5 +118,7 @@ public class Bot extends TelegramLongPollingBot {
         }
         return prop.getProperty("token");
     }
+
+
 
 }
