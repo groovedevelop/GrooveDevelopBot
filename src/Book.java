@@ -8,11 +8,11 @@ import java.io.IOException;
 public class Book {
     private Document document; //the page will be stored here
 
-    public Book() { connect(); }
+    public Book(String href) { connect(href); }
 
-    private void connect() { //connect to page
+    private void connect(String href) { //connect to page
         try {
-            document = Jsoup.connect("https://www.surgebook.com/timeoff/book/36").get();
+            document = Jsoup.connect(href).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,7 +51,7 @@ public class Book {
 
     public String getImg() {
         Elements elements = document.getElementsByClass("cover-book");
-        String url = elements.attr("style");
+        String url = elements.attr("style"); //retrives element attribute
         url = url.replace("background-image: url('", "");
         url = url.replace("');", "");
         return url;
